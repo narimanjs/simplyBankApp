@@ -82,4 +82,33 @@ const displayTransactions = function (transactions) {
   });
 };
 displayTransactions(account1.transactions);
-console.log(containerTransactions.innerHTML);
+// console.log(containerTransactions.innerHTML);
+
+const createsNickNames = function (accs) {
+  accs.forEach(function (acc) {
+    acc.nickName = acc.userName
+      .toLowerCase()
+      .split(' ')
+      .map(item => item[0])
+      .join('');
+  });
+};
+
+createsNickNames(accounts);
+console.log(accounts);
+// const userName = 'Oliver Avila';
+// const nickName = userName
+//   .toLowerCase()
+//   .split(' ')
+//   .map(item => item[0])
+//   .join('');
+
+// console.log(nickName);
+const displayBalance = function (transactions) {
+  const balance = transactions.reduce(
+    (accum, trans, index, arr) => accum + trans,
+    0
+  );
+  labelBalance.textContent = balance;
+};
+displayBalance(account1.transactions);
