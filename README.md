@@ -1,1 +1,1 @@
-#https://narcash.github.io/sup/simplyBankApp
+#https://narcash.github.io/simplyBankApp/
