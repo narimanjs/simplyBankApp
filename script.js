@@ -71,7 +71,7 @@ const account4 = {
     '2021-01-22T12:17:46.255Z',
     '2021-02-12T15:14:06.486Z',
   ],
-  currency: 'EUR',
+  currency: 'CAD',
   locale: 'fr-CA',
 };
 
@@ -125,7 +125,7 @@ const formatTransactionDate = function (date, locale) {
     Math.round(Math.abs((date2 - date1) / (1000 * 60 * 60 * 24)));
 
   const daysPassed = getDaysBetween2Dates(new Date(), date);
-  console.log(daysPassed);
+  // console.log(daysPassed);
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed <= 3) return 'Days ago';
@@ -136,6 +136,12 @@ const formatTransactionDate = function (date, locale) {
 
     return Intl.DateTimeFormat(locale).format(date);
   }
+};
+const formatCurrency = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
 };
 
 const displayTransactions = function (account, sort = false) {
@@ -148,7 +154,11 @@ const displayTransactions = function (account, sort = false) {
     const transType = trans > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(account.transactionsDates[index]);
     const transDate = formatTransactionDate(date, account.locale);
-
+    const formattedTrans = formatCurrency(
+      trans,
+      account.locale,
+      account.currency
+    );
     const transactionRow = `
       <div class="transactions__row">
       <div class="transactions__type transactions__type--${transType}">
@@ -156,7 +166,7 @@ const displayTransactions = function (account, sort = false) {
       </div>
       <div class="transactions__date">${transDate}</div>
       </div>
-      <div class="transactions__value">${trans.toFixed(2)}</div>
+      <div class="transactions__value">${formattedTrans}</div>
       </div>
       `;
     containerTransactions.insertAdjacentHTML('afterbegin', transactionRow);
@@ -190,19 +200,32 @@ const displayBalance = function (account) {
     0
   );
   account.balance = balance;
-  labelBalance.textContent = `${balance.toFixed(2)}`;
+
+  labelBalance.textContent = formatCurrency(
+    balance,
+    account.locale,
+    account.currency
+  );
 };
 
 const displayTotal = function (account) {
   const depositesTotal = account.transactions
     .filter(trans => trans > 0)
     .reduce((acc, trans) => acc + trans, 0);
-  labelSumIn.textContent = `${depositesTotal.toFixed(2)}$`;
+  labelSumIn.textContent = formatCurrency(
+    depositesTotal,
+    account.locale,
+    account.currency
+  );
 
   const withdrawalsTotal = account.transactions
     .filter(trans => trans < 0)
     .reduce((acc, trans) => acc + trans, 0);
-  labelSumOut.textContent = `${withdrawalsTotal.toFixed(2)}$`;
+  labelSumOut.textContent = formatCurrency(
+    withdrawalsTotal,
+    account.locale,
+    account.currency
+  );
 
   const interestTotal = account.transactions
     .filter(trans => trans > 0)
@@ -212,7 +235,11 @@ const displayTotal = function (account) {
       return interest >= 5;
     })
     .reduce((acc, interest) => acc + interest, 0);
-  labelSumInterest.textContent = `${interestTotal}$`;
+  labelSumInterest.textContent = formatCurrency(
+    interestTotal,
+    account.locale,
+    account.currency
+  );
 };
 
 // Имплементация Login
