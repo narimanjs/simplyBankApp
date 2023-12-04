@@ -1,1 +1,1 @@
-# https://nariman-btc.github.io/simplyBankApp/
+# https://narimanjs.github.io/simplyBankApp/
